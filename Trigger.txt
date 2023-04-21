@@ -1,0 +1,27 @@
+trigger TriggerContact on Contact (after insert, after delete, after undelete, after update, before delete)  {
+    
+    if(trigger.isAfter && trigger.isInsert){
+            numberofContact.countContact(trigger.new);
+        }
+        if(trigger.isAfter && trigger.isDelete){
+            numberofContact.countContact(trigger.old);
+        }
+    if(trigger.isAfter && trigger.isUpdate){
+        numberofContact.afterupdatecontactcount(trigger.newmap, trigger.oldmap);
+    }
+    
+    
+    
+        if(trigger.isAfter && trigger.isInsert){
+            TriggerContactApexClass.createContactRelationship(trigger.new);
+        }
+        if(trigger.isBefore && trigger.isDelete){
+            TriggerContactApexClass.deleteContactRelationship(trigger.old);
+            accSalesrep.BeforeDelete(Trigger.old);
+        }
+        if(trigger.isAfter && trigger.isundelete){
+            TriggerContactApexClass.undeleteContactRelatioship(trigger.newmap);
+        }
+        
+    
+}

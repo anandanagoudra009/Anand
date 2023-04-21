@@ -1,0 +1,50 @@
+public class numberofContact {
+    
+
+    public static void countContact(List<Contact> newlist){
+          List<Account> accList=new List<Account>();
+    set<Id> accId=new Set<Id>();  
+        for(Contact c:newlist){
+            if(c.AccountId!=null){
+                accId.add(c.AccountId);
+            }
+        }
+        
+        List<Account> acc=[Select Id, Number_of_Contacts___c,(Select Id, Name, AccountId From Contacts) From Account where Id in:accId];
+        
+        for(Account a:acc){
+            a.Number_of_Contacts___c=a.Contacts.size();
+            accList.add(a);
+        }
+        
+        update accList;
+    }
+    
+
+    public static void afterupdatecontactcount(map<Id,Contact> newlist, map<Id,Contact> oldlist){
+            List<Account> updateacc=new List<Account>();
+        set<Id> aid1=new set<Id>();
+        //set<Id> aid2=new set<Id>();
+        for(Contact nc:newlist.values()){
+            if(newlist.get(nc.Id).AccountId!=oldlist.get(nc.Id).AccountId){
+                if(newlist.get(nc.Id).AccountId!=null){
+                     aid1.add(newlist.get(nc.Id).AccountId);
+                }
+               
+                if(oldlist.get(nc.Id).AccountId!=null){
+                     aid1.add(oldlist.get(nc.Id).AccountId);
+                }
+               
+            }
+        }
+        
+        List<Account> acc=[Select Id, Number_of_Contacts___c,(Select Id, AccountId From Contacts) From Account where Id in:aid1];
+
+        for(Account a:acc){
+            a.Number_of_Contacts___c=a.Contacts.size();
+            updateacc.add(a);
+        }        
+        
+update updateacc;
+}
+}
